@@ -8,7 +8,7 @@ namespace Observe.Collections
 {
     [DebuggerDisplay("Count = {Count}")]
     [DebuggerTypeProxy(typeof(CollectionDebugView<>))]
-    public sealed class ObservableList<T> : NotifyCollectionChanged<T>, IList<T>
+    public sealed class ObservableList<T> : NotifyCollectionChanged<T>, IList<T>, IList
     {
         private const string CountName = nameof(Count);
         private const string IndexerName = "Item[]";
@@ -33,6 +33,12 @@ namespace Observe.Collections
 
         public int Count => _values.Count;
         public bool IsReadOnly => false;
+        bool IList.IsFixedSize => false;
+        bool IList.IsReadOnly => IsReadOnly;
+        int ICollection.Count => Count;
+        bool ICollection.IsSynchronized => false;
+        object ICollection.SyncRoot => ((IList)_values).SyncRoot;
+        object IList.this[int index] { get => this[index]; set => this[index] = (T)value; }
 
         public int IndexOf(T item) => _values.IndexOf(item);
         public bool Contains(T item) => _values.Contains(item);
@@ -172,6 +178,55 @@ namespace Observe.Collections
 
         public IEnumerator<T> GetEnumerator() => _values.GetEnumerator();
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+        int IList.Add(object value)
+        {
+            Add((T)value);
+            return Count - 1;
+        }
+
+        void IList.Clear() => Clear();
+
+        bool IList.Contains(object value)
+        {
+            if (value is T item)
+            {
+                return Contains(item);
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        int IList.IndexOf(object value)
+        {
+            if (value is T item)
+            {
+                return IndexOf(item);
+            }
+            else
+            {
+                return -1;
+            }
+        }
+
+        void IList.Insert(int index, object value) => Insert(index, (T)value);
+
+        void IList.Remove(object value)
+        {
+            if (value is T item)
+            {
+                Remove(item);
+            }
+        }
+
+        void IList.RemoveAt(int index) => RemoveAt(index);
+
+        void ICollection.CopyTo(Array array, int index)
+        {
+            ((ICollection)_values).CopyTo(array, index);
+        }
 
         private readonly List<T> _values;
     }
