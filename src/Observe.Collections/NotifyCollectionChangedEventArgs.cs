@@ -27,6 +27,15 @@ namespace Observe.Collections
         public static NotifyCollectionChangedEventArgs<T> Add(IEnumerable<T> items, int index)
             => new NotifyCollectionChangedEventArgs<T>(NotifyCollectionChangedAction.Add, new List<T>(items), index);
 
+        public static NotifyCollectionChangedEventArgs<T> Remove(T item)
+            => new NotifyCollectionChangedEventArgs<T>(NotifyCollectionChangedAction.Remove, item);
+        public static NotifyCollectionChangedEventArgs<T> Remove(T item, int index)
+            => new NotifyCollectionChangedEventArgs<T>(NotifyCollectionChangedAction.Remove, item, index);
+        public static NotifyCollectionChangedEventArgs<T> Remove(IEnumerable<T> items)
+            => new NotifyCollectionChangedEventArgs<T>(NotifyCollectionChangedAction.Remove, new List<T>(items));
+        public static NotifyCollectionChangedEventArgs<T> Remove(IEnumerable<T> items, int index)
+            => new NotifyCollectionChangedEventArgs<T>(NotifyCollectionChangedAction.Remove, new List<T>(items), index);
+
         //[MaybleNull]
         public new IReadOnlyList<T> OldItems
         {
@@ -34,7 +43,7 @@ namespace Observe.Collections
             {
                 if (base.OldItems != null)
                 {
-                    return new TypedListWrapper<T>(base.OldItems);
+                    return new UntypedListWrapper<T>(base.OldItems);
                 }
                 else
                 {
@@ -50,7 +59,7 @@ namespace Observe.Collections
             {
                 if (base.NewItems != null)
                 {
-                    return new TypedListWrapper<T>(base.NewItems);
+                    return new UntypedListWrapper<T>(base.NewItems);
                 }
                 else
                 {
