@@ -36,6 +36,15 @@ namespace Observe.Collections
         public static NotifyCollectionChangedEventArgs<T> Remove(IEnumerable<T> items, int index)
             => new NotifyCollectionChangedEventArgs<T>(NotifyCollectionChangedAction.Remove, new List<T>(items), index);
 
+        public static NotifyCollectionChangedEventArgs<T> Replace(T oldItem, T newItem)
+            => new NotifyCollectionChangedEventArgs<T>(NotifyCollectionChangedAction.Replace, newItem, oldItem);
+        public static NotifyCollectionChangedEventArgs<T> Replace(T oldItem, T newItem, int index)
+            => new NotifyCollectionChangedEventArgs<T>(NotifyCollectionChangedAction.Replace, newItem, oldItem, index);
+        public static NotifyCollectionChangedEventArgs<T> Replace(IEnumerable<T> oldItems, IEnumerable<T> newItems)
+            => new NotifyCollectionChangedEventArgs<T>(NotifyCollectionChangedAction.Replace, new List<T>(newItems), new List<T>(oldItems));
+        public static NotifyCollectionChangedEventArgs<T> Replace(IEnumerable<T> oldItems, IEnumerable<T> newItems, int index)
+            => new NotifyCollectionChangedEventArgs<T>(NotifyCollectionChangedAction.Replace, new List<T>(newItems), new List<T>(oldItems), index);
+
         //[MaybleNull]
         public new IReadOnlyList<T> OldItems
         {

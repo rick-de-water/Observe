@@ -7,6 +7,7 @@ using System.Linq;
 namespace Observe.Collections
 {
     [DebuggerDisplay("Count = {Count}")]
+    [DebuggerTypeProxy(typeof(CollectionDebugView<>))]
     public sealed class ObservableList<T> : NotifyCollectionChanged<T>, IList<T>
     {
         private const string CountName = nameof(Count);
@@ -20,7 +21,14 @@ namespace Observe.Collections
         public T this[int index]
         {
             get => _values[index];
-            set => throw new NotImplementedException();
+            set
+            {
+                var collectionChangeEventArgs = NotifyCollectionChangedEventArgs<T>.Replace(_values[index], value, index);
+                InvokePropertyChanging(IndexerName);
+                _values[index] = value;
+                InvokePropertyChanged(IndexerName);
+                InvokeCollectionChanged(collectionChangeEventArgs);
+            }
         }
 
         public int Count => _values.Count;

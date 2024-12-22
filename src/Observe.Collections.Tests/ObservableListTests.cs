@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Specialized;
+﻿using System.Collections.Specialized;
 using System.ComponentModel;
 
 namespace Observe.Collections;
@@ -286,8 +284,8 @@ public class ObservableListTests
         Should.Throw<ArgumentOutOfRangeException>(() => List.RemoveRange(0, -1));
         Should.Throw<ArgumentException>(() => List.RemoveRange(List.Count, 1));
         Should.Throw<ArgumentException>(() => List.RemoveRange(0, List.Count + 1));
-
         Events.Count.ShouldBe(0);
+
         List.RemoveRange(0, 0);
         Events.Count.ShouldBe(0);
 
@@ -357,5 +355,33 @@ public class ObservableListTests
         e.OldStartingIndex.ShouldBe(0);
         e.NewItems.ShouldBeNull();
         e.NewStartingIndex.ShouldBe(-1);
+    }
+
+    [Fact]
+    public void Replace()
+    {
+        const int total_count = 1000;
+        List.AddRange(Enumerable.Range(0, total_count));
+        Events.Clear();
+
+        Should.Throw<ArgumentOutOfRangeException>(() => List[-1] = 10);
+        Should.Throw<ArgumentOutOfRangeException>(() => List[List.Count] = 10);
+        Events.Count.ShouldBe(0);
+
+        var index = List.Count / 2;
+        var oldValue = List[index];
+        var newValue = List.Count * 2;
+        List[index] = newValue;
+
+        Events.Count.ShouldBe(3);
+        Events[0].ShouldBeOfType<PropertyChangingEventArgs>().PropertyName.ShouldBe("Item[]");
+        Events[1].ShouldBeOfType<PropertyChangedEventArgs>().PropertyName.ShouldBe("Item[]");
+
+        var e = Events[2].ShouldBeOfType<NotifyCollectionChangedEventArgs<int>>();
+        e.Action.ShouldBe(NotifyCollectionChangedAction.Replace);
+        e.OldItems.ShouldBe([oldValue]);
+        e.OldStartingIndex.ShouldBe(index);
+        e.NewItems.ShouldBe([newValue]);
+        e.NewStartingIndex.ShouldBe(index);
     }
 }
