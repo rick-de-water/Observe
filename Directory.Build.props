@@ -1,0 +1,24 @@
+<Project>
+  <PropertyGroup>
+    <RootNamespace>$(MSBuildProjectName.Replace(" ", "_").Replace(".Tests", "").Replace(".Benchmarks", "").Replace(".Generators", ""))</RootNamespace>
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+    <CompilerGeneratedFilesOutputPath>$(IntermediateOutputPath)/Generated</CompilerGeneratedFilesOutputPath>
+  </PropertyGroup>
+  
+  <ItemGroup Condition="$(MSBuildProjectName.EndsWith('Tests'))">
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="Shouldly" />
+    <PackageReference Include="xunit.analyzers">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="xunit.core" />
+    <PackageReference Include="xunit.runner.visualstudio">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <Using Include="Shouldly"/>
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+</Project>
